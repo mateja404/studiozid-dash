@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
+require('dotenv').config();
 
-const nextConfig: NextConfig = {
-  /* config options here */
+module.exports = {
+  env: {
+    MAPTILER_KEY: process.env.MAPTILER_KEY,
+  },
 };
-
-export default nextConfig;
