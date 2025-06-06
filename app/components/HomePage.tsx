@@ -28,8 +28,8 @@ const HomePage = () => {
   }
   return (
     <>
-      <section className='relative w-full min-h-screen flex flex-col xl:flex-row'>
-        <button onClick={toggleMenu} className="md:hidden absolute mt-7 right-5 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group" aria-label="Toggle menu">
+      <section className='relative overflow-x-hidden w-full min-h-screen flex flex-col xl:flex-row'>
+        <button onClick={toggleMenu} className="absolute mt-7 right-5 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden" aria-label="Toggle menu">
           <div className="relative flex flex-col items-center justify-center w-5 h-5 overflow-hidden">
               <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
               <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
@@ -37,7 +37,7 @@ const HomePage = () => {
           </div>
         </button>
         <SidebarNew isOpen={isOpen} />
-        <div className={`flex-grow flex flex-col p-4 md:p-7 2xl:pl-[320px] max-sm:pt-[50px] ${isOpen ? "hidden" : ""}`}>
+        <div className={`flex-grow flex flex-col p-4 md:p-7 lg:pl-[220px] xl:pl-[320px] 2xl:pl-[320px] max-sm:pt-[50px] ${isOpen ? "hidden" : ""}`}>
           <div className='w-full mb-8'>
             <p className='flex items-center text-[#535d6d]'>
               Projekti 
@@ -62,7 +62,7 @@ const HomePage = () => {
               </p>
             )}
           </div>
-          <div className="w-full max-w-[100%] mx-auto bg-white rounded-3xl shadow-md p-4 md:p-6 overflow-x-auto">
+          <div className="w-full min-h-[200px] max-w-[100%] mx-auto bg-white rounded-3xl shadow-md p-4 md:p-6 overflow-x-auto">
             <h2 className="text-xl mb-4">Detalji projekta</h2>
             <Table>
               <TableHeader>
@@ -89,7 +89,7 @@ const HomePage = () => {
               </TableBody>
             </Table>
           </div>
-          <div className='flex w-full h-screen xl:h-1/2 2xl:h-1/2 mt-15 flex-col lg:flex-row xl:flex-row 2xl:flex-row gap-x-5 gap-y-10'>
+          <div className='flex w-full h-screen xl:h-1/2 2xl:h-1/2 mt-25 flex-col lg:flex-row xl:flex-row 2xl:flex-row gap-x-5 gap-y-10'>
             <div className='flex w-full 2xl:w-1/2 h-full'>
               <div className='w-full h-full flex flex-col max-md:flex-row gap-2'>
                 <div className='mx-auto  w-full h-full bg-white rounded-3xl p-6 shadow-md'>
