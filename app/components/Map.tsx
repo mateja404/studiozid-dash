@@ -21,7 +21,7 @@ const Mapica = () => {
         bearing: 0,
       });
 
-      mapInstanceRef.current.addControl(new maplibregl.NavigationControl());
+      mapInstanceRef.current.addControl(new maplibregl.NavigationControl({}));
 
       new maplibregl.Marker()
         .setLngLat([20.668411, 44.862984])

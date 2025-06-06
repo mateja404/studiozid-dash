@@ -90,9 +90,9 @@ const HomePage = () => {
             </Table>
           </div>
           <div className='flex w-full h-screen xl:h-1/2 2xl:h-1/2 mt-25 flex-col lg:flex-row xl:flex-row 2xl:flex-row gap-x-5 gap-y-10'>
-            <div className='flex w-full 2xl:w-1/2 h-full'>
-              <div className='w-full h-full flex flex-col max-md:flex-row gap-2'>
-                <div className='mx-auto  w-full h-full bg-white rounded-3xl p-6 shadow-md'>
+            <div className='flex w-full xl:w-1/2 2xl:w-1/2 h-full'>
+              <div className='w-full h-fullflex flex-col max-md:flex-row gap-2'>
+                <div className='mx-auto bg-white w-full h-full overflow-y-auto rounded-3xl p-6 shadow-md'>
                     <ul className="w-full space-y-10 relative">
                         <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-black"></div>
                         <li className="relative flex items-start">
@@ -123,7 +123,7 @@ const HomePage = () => {
                 </div>
             </div>
             </div>
-            <div className='flex w-full 2xl:w-1/2 h-full rounded-xl bg-white shadow-md items-center justify-center'>
+            <div className='flex w-full xl:w-1/2 2xl:w-1/2 h-full rounded-xl bg-white shadow-md items-center justify-center'>
               <div className='w-full h-full items-center justify-center flex'>
                 <Mapica/>
               </div>
