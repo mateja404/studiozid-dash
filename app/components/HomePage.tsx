@@ -72,7 +72,6 @@ const HomePage = () => {
                   <TableHead>Status isplate</TableHead>
                   <TableHead>Radnik</TableHead>
                   <TableHead>Adresa</TableHead>
-                  <TableHead>Grad</TableHead>
                   <TableHead className="text-right">Budžet</TableHead>
                 </TableRow>
               </TableHeader>
@@ -82,8 +81,7 @@ const HomePage = () => {
                   <TableCell>13.2.2025.</TableCell>
                   <TableCell>Avansirano</TableCell>
                   <TableCell>Milan Kešelj</TableCell>
-                  <TableCell>Veljka Petrovića 13</TableCell>
-                  <TableCell>Pančevo</TableCell>
+                  <TableCell>Veljka Petrovića 13, Pančevo</TableCell>
                   <TableCell className="text-right">2000&euro;</TableCell>
                 </TableRow>
               </TableBody>
