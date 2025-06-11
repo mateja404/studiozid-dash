@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
         return new NextResponse("Adresa je obavezna", { status: 400 });
     }
     if (!worker_name || !budget || !start_date || !end_date || !payment_status) {
-        return new NextResponse("Svi podaci moraju biti popunjeni", { status: 400 });
+        return  NextResponse.json({ message: "Sva polja su obavezna!" }, { status: 400 });
     }
 
     let conn;
