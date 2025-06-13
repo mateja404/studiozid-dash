@@ -9,3 +9,9 @@ CREATE TABLE projects (
   end_date DATE NOT NULL,
   payment_status ENUM('neplacen', 'placen', 'avansirano') DEFAULT 'neplacen'
 );
+
+CREATE TABLE radnici (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    role VARCHAR(100) NOT NULL
+)

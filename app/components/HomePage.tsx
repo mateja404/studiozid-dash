@@ -29,28 +29,36 @@ const HomePage = () => {
   return (
     <>
       <section className='relative overflow-x-hidden w-full min-h-screen flex flex-col xl:flex-row'>
-        <button onClick={toggleMenu} className="absolute mt-7 right-5 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden" aria-label="Toggle menu">
-          <div className="relative flex flex-col items-center justify-center w-5 h-5 overflow-hidden">
-              <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
-              <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
-              <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
-          </div>
-        </button>
-        <SidebarNew isOpen={isOpen} />
-        <div className={`flex-grow flex flex-col p-4 md:p-7 lg:pl-[220px] xl:pl-[320px] 2xl:pl-[320px] max-sm:pt-[50px] ${isOpen ? "hidden" : ""}`}>
-          <div className='w-full mb-8'>
-            <p className='flex items-center text-[#535d6d]'>
-              Projekti 
-              <span><ChevronRight className='w-[20px]' /></span>
-              <span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>
+          <button onClick={toggleMenu}
+                  className="fixed mt-7 right-5 z-33 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden"
+                  aria-label="Toggle menu">
+              <div className="relative flex flex-col items-center justify-center w-5 h-5 overflow-hidden">
+                  <span
+                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
+                  <span
+                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
+                  <span
+                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
+              </div>
+          </button>
+          <SidebarNew isOpen={isOpen}/>
+          <div
+              className={`flex-grow flex flex-col p-4 md:p-7 lg:pl-[220px] xl:pl-[320px] 2xl:pl-[320px] max-sm:pt-[120px] ${isOpen ? "hidden" : ""}`}>
+              <div className='w-full mb-8'>
+                  <p className='flex items-center text-[#535d6d]'>
+                      Projekti
+                      <span><ChevronRight className='w-[20px]'/></span>
+                      <span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>
                 hdjhdhf874857
               </span>
-            </p>
-            <div className='mt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-              <h2 className='text-2xl text-[#1b1b1a] font-bold'>
-                Projekat: {shortUUID}
-              </h2>
-              <Button className="text-white pt-1 pb-1 pl-5 pr-5 rounded-full bg-black font-semibold cursor-pointer z-0" onClick={() => setStatus("završeno")}  disabled={status === "završeno"} > Označi kao završeno</Button>
+                  </p>
+                  <div className='mt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+                      <h2 className='text-2xl text-[#1b1b1a] font-bold'>
+                          Projekat: {shortUUID}
+                      </h2>
+                      <Button
+                          className="text-white pt-1 pb-1 pl-5 pr-5 rounded-full bg-black font-semibold cursor-pointer z-0"
+                          onClick={() => setStatus("završeno")} disabled={status === "završeno"}> Označi kao završeno</Button>
             </div>
             {status === "utoku" ? (
               <p className='bg-[#e5f7ec] rounded-xl pl-3 pr-3 w-max mt-5'>
