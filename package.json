@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@edgestore/react": "^0.5.2",
+    "@edgestore/server": "^0.5.2",
+    "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-select": "^2.2.5",
@@ -16,6 +19,7 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "lucide-react": "^0.511.0",

@@ -28,48 +28,32 @@ const HomePage = () => {
   }
   return (
     <>
-      <section className='relative overflow-x-hidden w-full min-h-screen flex flex-col xl:flex-row'>
-          <button onClick={toggleMenu}
-                  className="fixed mt-7 right-5 z-33 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden"
-                  aria-label="Toggle menu">
+      <section className='relative overflow-x-hidden w-full flex flex-col xl:flex-row'>
+          <button onClick={toggleMenu} className="fixed mt-7 right-5 z-33 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden" aria-label="Toggle menu">
               <div className="relative flex flex-col items-center justify-center w-5 h-5 overflow-hidden">
-                  <span
-                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
-                  <span
-                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
-                  <span
-                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
+                  <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
+                  <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
+                  <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
               </div>
           </button>
           <SidebarNew isOpen={isOpen}/>
-          <div
-              className={`flex-grow flex flex-col p-4 md:p-7 lg:pl-[220px] xl:pl-[320px] 2xl:pl-[320px] max-sm:pt-[120px] ${isOpen ? "hidden" : ""}`}>
+          <div className={`flex-grow flex flex-col p-4 max-sm:mt-10 md:mt-25 lg:mt-0 xl:mt-0 2xl:mt-0 sm:mt-30 md:p-7 lg:pl-[220px] xl:pl-[320px] 2xl:pl-[320px] max-sm:pt-[120px] ${isOpen ? "hidden" : ""}`}>
               <div className='w-full mb-8'>
-                  <p className='flex items-center text-[#535d6d]'>
-                      Projekti
-                      <span><ChevronRight className='w-[20px]'/></span>
-                      <span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>
-                hdjhdhf874857
-              </span>
-                  </p>
+                  <p className='flex items-center text-[#535d6d]'>Projekti<span><ChevronRight className='w-[20px]'/></span><span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>hdjhdhf874857</span></p>
                   <div className='mt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-                      <h2 className='text-2xl text-[#1b1b1a] font-bold'>
-                          Projekat: {shortUUID}
-                      </h2>
-                      <Button
-                          className="text-white pt-1 pb-1 pl-5 pr-5 rounded-full bg-black font-semibold cursor-pointer z-0"
-                          onClick={() => setStatus("završeno")} disabled={status === "završeno"}> Označi kao završeno</Button>
-            </div>
-            {status === "utoku" ? (
-              <p className='bg-[#e5f7ec] rounded-xl pl-3 pr-3 w-max mt-5'>
-                <span className='text-[#499f7a] font-bold'>U toku</span>
-              </p>
-            ) : (
-              <p className='bg-red-300/30 rounded-xl pl-3 pr-3 w-max mt-5'>
-                <span className='text-red-400 font-bold'>Završen</span>
-              </p>
-            )}
-          </div>
+                      <h2 className='text-2xl text-[#1b1b1a] font-bold'>Projekat: {shortUUID}</h2>
+                      <Button className="text-white pt-1 pb-1 pl-5 pr-5 rounded-full bg-black font-semibold cursor-pointer z-0" onClick={() => setStatus("završeno")} disabled={status === "završeno"}> Označi kao završeno</Button>
+                  </div>
+                {status === "utoku" ? (
+                  <p className='bg-[#e5f7ec] rounded-xl pl-3 pr-3 w-max mt-5'>
+                    <span className='text-[#499f7a] font-bold'>U toku</span>
+                  </p>
+                ) : (
+                  <p className='bg-red-300/30 rounded-xl pl-3 pr-3 w-max mt-5'>
+                    <span className='text-red-400 font-bold'>Završen</span>
+                  </p>
+                )}
+              </div>
           <div className="w-full min-h-[200px] max-w-[100%] mx-auto bg-white rounded-3xl shadow-md p-4 md:p-6 overflow-x-auto">
             <h2 className="text-xl mb-4">Detalji projekta</h2>
             <Table>

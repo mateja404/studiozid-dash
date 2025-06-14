@@ -3,7 +3,9 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className="w-screen min-h-screen flex"><HomePage/></div>
+      <div className="w-screen lg:h-screen flex overflow-auto">
+        <HomePage/>
+      </div>
   )
 }
 
