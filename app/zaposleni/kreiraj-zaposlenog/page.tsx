@@ -8,50 +8,102 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, SelectLabel } from "@/components/ui/select";
+import SidebarNew from "@/app/components/SidebarNew";
 
 const Page = () => {
+    const { edgestore }: any = useEdgeStore();
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [file, setFile] = useState<File>();
-    const [courseName, setCourseName] = useState<string>("");
-    const [courseDesc, setCourseDesc] = useState<string>("");
-    const [coursePrice, setCoursePrice] = useState<number>(0);
-    const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
-    const { edgestore }: any = useEdgeStore();
+    const [workerName, setWorkerName] = useState<string>("");
+    const [position, setPosition] = useState<string>("");
+    const [phoneNumber, setPhoneNumber] = useState<number>(0);
+    const [profilePicture, setProfilePicture] = useState<string>("");
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isActive, setIsActive] = useState(false);
     const options = [
         { value: "moler", label: "Moler" },
         { value: "gipsar", label: "Gipsar" },
         { value: "fasader", label: "Fasader" },
     ];
 
-    async function createCourseFunc(e: any) {
+    async function createWorker(e: any) {
         e.preventDefault();
-        if (!file || !courseName.trim() || !courseDesc.trim() || coursePrice < 0) {
-            toast.error("All fields must be filled");
-            return;
-        }
         try {
             const res = await edgestore.publicFiles.upload({file});
-            setThumbnailUrl(res.url);
+            setProfilePicture(res.url);
 
-            const email = "kididrtina@gmail.com"
-            const response = await axios.post("http://localhost:3000/api/create-course", { courseName: courseName, courseDesc: courseDesc, coursePrice: coursePrice, thumbnailUrl: res.url, author: email })
+            const response = await axios.post("http://localhost:3000/api/create-worker", { workerName: workerName, category: selectedCategories, phoneNumber: phoneNumber, position: position, profilePicture: profilePicture  })
                 .then(res => {
-                    console.log(res.data)
-                    if (res.status === 200) {
-                        toast.success("Course created");
-                    } else if (res.status === 500) {
-                        toast.error("Something went wrong");
-                        return;
-                    }
+                    console.log(res.data);
                 })
         } catch (err) {}
     }
+
+    function toggleMenu() {
+        setIsActive((prev) => !prev);
+        setSidebarOpen((prev) => !prev);
+    }
     return (
-        <div>
-            <MultiSelect placeholder="Izaberite profesiju" options={options} selectedValues={selectedCategories} setSelectedValues={setSelectedCategories}/>
-            <Input type={"file"} onChange={(e ) => setFile(e.target.files?.[0])}/>
-            <Button onClick={createCourseFunc}>salji</Button>
-        </div>
+        <section className="relative overflow-x-hidden w-full min-h-screen flex">
+            <Toaster/>
+            <button onClick={toggleMenu} className="fixed mt-7 right-5 z-33 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden" aria-label="Toggle menu">
+                <div className="relative flex flex-col items-center justify-center w-5 h-5 overflow-hidden">
+                    <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
+                    <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
+                    <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
+                </div>
+            </button>
+            <SidebarNew isOpen={sidebarOpen} setOpen={setSidebarOpen}/>
+            <div className={`w-full max-w-sm flex items-center justify-center mt-35 mx-auto`}>
+                <div className="flex flex-col gap-6 w-full">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-2xl">Novi zaposleni</CardTitle>
+                            <CardDescription>Kreirajte novog zaposlenog</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={createWorker}>
+                                <div className="flex flex-col gap-6">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="radnik">Ime i prezime</Label>
+                                        <Input id="radnik" type="text" placeholder="Petar Petrović" required className="focus-visible:ring-0" onChange={(e) => setWorkerName(e.target.value)}/>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="phonenumber">Broj telefona</Label>
+                                        <Input id="phonenumber" type="number" placeholder="063555333" required className="focus-visible:ring-0" onChange={(e) => setPhoneNumber(Number(e.target.value))}/>
+                                    </div>
+                                    <div className="flex flex-col gap-3">
+                                        <Label className="px-1">Pozicija</Label>
+                                        <Select onValueChange={setPosition}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Izaberite poziciju..." />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="apple">Radnik</SelectItem>
+                                                    <SelectItem value="banana">Menadžer</SelectItem>
+                                                    <SelectItem value="blueberry">Vlasnik</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="flex flex-col gap-3">
+                                        <Label className="px-1">Kategorija</Label>
+                                        <MultiSelect placeholder="Izaberite kategoriju..." options={options} selectedValues={selectedCategories} setSelectedValues={setSelectedCategories}/>
+                                    </div>
+                                    <Button type="submit" className="w-full hover:cursor-pointer">
+                                        Kreiraj zaposlenog
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </section>
     );
 };
 

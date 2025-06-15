@@ -10,8 +10,13 @@ CREATE TABLE projects (
   payment_status ENUM('neplacen', 'placen', 'avansirano') DEFAULT 'neplacen'
 );
 
-CREATE TABLE radnici (
+CREATE TABLE workers (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    role VARCHAR(100) NOT NULL
-)
+    workerName VARCHAR(255) NOT NULL,
+    position VARCHAR(100) NOT NULL,
+    phoneNumber VARCHAR(20) NOT NULL,
+    profilePicture VARCHAR(255),
+    categories JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
