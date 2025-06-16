@@ -11,9 +11,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, SelectLabel } from "@/components/ui/select";
 import SidebarNew from "@/app/components/SidebarNew";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
     const { edgestore }: any = useEdgeStore();
+    const router = useRouter();
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [file, setFile] = useState<File>();
     const [workerName, setWorkerName] = useState<string>("");
@@ -34,12 +36,24 @@ const Page = () => {
         try {
             const res = await edgestore.publicFiles.upload({file});
             setProfilePicture(res.url);
+            console.log(profilePicture, workerName, position, phoneNumber, selectedCategories)
 
             const response = await axios.post("http://localhost:3000/api/create-worker", { workerName: workerName, category: selectedCategories, phoneNumber: phoneNumber, position: position, profilePicture: profilePicture  })
                 .then(res => {
-                    console.log(res.data);
+                    toast.success("Radnik je uspešno kreiran");
+                    setTimeout(() => {
+                        router.push("/zaposleni");
+                    }, 1200);
                 })
-        } catch (err) {}
+        } catch (error: any) {
+            if (error.response) {
+                toast.error(error.response.data.message);
+            } else if (error.request) {
+                console.log('Greška u zahtevu', error.request);
+            } else {
+                console.log('Nepoznata greška', error.message);
+            }
+        }
     }
 
     function toggleMenu() {
@@ -57,7 +71,7 @@ const Page = () => {
                 </div>
             </button>
             <SidebarNew isOpen={sidebarOpen} setOpen={setSidebarOpen}/>
-            <div className={`w-full max-w-sm flex items-center justify-center mt-35 mx-auto`}>
+            <div className={`w-full max-w-sm flex items-center justify-center mt-35 lg:mt-0 xl:mt-0 2xl:mt-0 mx-auto`}>
                 <div className="flex flex-col gap-6 w-full">
                     <Card>
                         <CardHeader>
@@ -83,9 +97,9 @@ const Page = () => {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectItem value="apple">Radnik</SelectItem>
-                                                    <SelectItem value="banana">Menadžer</SelectItem>
-                                                    <SelectItem value="blueberry">Vlasnik</SelectItem>
+                                                    <SelectItem value="radnik">Radnik</SelectItem>
+                                                    <SelectItem value="menadzer">Menadžer</SelectItem>
+                                                    <SelectItem value="vlasnik">Vlasnik</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
@@ -93,6 +107,10 @@ const Page = () => {
                                     <div className="flex flex-col gap-3">
                                         <Label className="px-1">Kategorija</Label>
                                         <MultiSelect placeholder="Izaberite kategoriju..." options={options} selectedValues={selectedCategories} setSelectedValues={setSelectedCategories}/>
+                                    </div>
+                                    <div className="flex flex-col gap-3">
+                                        <Label className="px-1">Profilna slika</Label>
+                                        <Input type={"file"} onChange={(e) => setFile(e.target.files?.[0])} />
                                     </div>
                                     <Button type="submit" className="w-full hover:cursor-pointer">
                                         Kreiraj zaposlenog

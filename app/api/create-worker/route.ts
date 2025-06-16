@@ -12,14 +12,14 @@ export async function POST(req: NextRequest) {
     try {
         conn = await pool.getConnection();
 
-        const [workerRows] = await conn.query("SELECT * FROM workers WHERE workerName = ?", [workerName]);
+        const [workerRows] = await conn.query("SELECT * FROM workers WHERE workerName COLLATE utf8mb4_unicode_ci = ?", [workerName]);
         if ((workerRows as any).length > 0) {
             return NextResponse.json({ message: "Radnik već postoji u bazi" }, { status: 400 });
         }
         const categoryJSON = JSON.stringify(category);
 
         await conn.query(
-            "INSERT INTO workers (workerName, category, phoneNumber, position, profilePicture) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO workers (workerName, categories, phoneNumber, position, profilePicture) VALUES (?, ?, ?, ?, ?)",
             [workerName, categoryJSON, phoneNumber, position, profilePicture]
         );
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SidebarNew from "@/app/components/SidebarNew";
 import { ChevronRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,31 @@ import Image from "next/image";
 import slikamene from "@/public/BandWMoler.webp";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import axios from "axios";
+
+interface worker {
+    workerName: string,
+    position: string
+}
 
 const Page = () => {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(false);
+    const [workersCount, setWorkersCount] = useState<number>(0);
+    const [workers, setWorkers] = useState<worker[]>([]);
+
+    useEffect(() => {
+        async function getAllWorkers() {
+            try {
+                const response = await axios.get("/api/get-all-workers");
+                setWorkers(response.data.workers);
+                setWorkersCount(response.data.workersCount);
+                console.log(response.data.workers)
+            } catch (error) {}
+        }
+        getAllWorkers();
+    }, []);
 
     function toggleMenu() {
         setIsActive(prevState => !prevState);
@@ -39,28 +59,37 @@ const Page = () => {
                         <p className='flex items-center text-[#535d6d]'><span onClick={() => router.push("/")} className="hover:cursor-pointer">Početna</span><span><ChevronRight className='w-[20px] translate-y-[2px]'/></span><span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>Zaposleni</span></p>
                         <div className='mt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
                             <div className="flex-col">
-                                <h2 className='text-2xl text-[#1b1b1a] font-bold'>Zaposleni (140)</h2>
+                                <h2 className='text-2xl text-[#1b1b1a] font-bold'>Zaposleni ({workersCount})</h2>
                                 <p className='text-md text-muted-foreground font-semibold'>Ovde će biti prikazani svi zaposleni</p>
                             </div>
                             <Button className="text-white pt-1 pb-1 pl-5 pr-5 rounded-full bg-black font-semibold cursor-pointer z-0"><Plus/> Dodaj novog radnika</Button>
                         </div>
                     </div>
                     <main className="mt-20 justify-items-center grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] place-items-center gap-y-5 -gap-x-20">
-                        <div className="relative w-[300px] h-[250px] rounded-xl shadow-md">
-                            <div className="absolute top-5 left-5 w-[65px] border-gray-200 border-3 h-[65px] rounded-full bg-white flex items-center justify-center">
-                                <Image src={slikamene} alt={"radnik"} className="object-fit w-[55px] h-[55px] rounded-full"/>
-                            </div>
-                            <h1 className="absolute top-6 right-22 font-semibold text-black text-xl">Milan Kešelj</h1>
-                            <p className="absolute top-14 left-26 text-muted-foreground text-md">Vlasnik</p>
-                            <div className="flex flex-col xl:flex-row 2xl:flex-row absolute left-5 top-25 w-[90%] h-[50px]">
-                                <div className="h-1/2 flex gap-2 flex-wrap">
-                                    <Badge variant={"secondary"} className="pt-[5px] pb-[5px] pl-3 pr-3">Moler</Badge>
-                                    <Badge variant={"secondary"} className="pt-[5px] pb-[5px] pl-3 pr-3">Moler</Badge>
-                                    <Badge variant={"secondary"} className="pt-[5px] pb-[5px] pl-3 pr-3">Menadžer</Badge>
+                        {workers.map((worker, index) => (
+                            <div key={index} className="relative w-[300px] h-[250px] rounded-xl shadow-md">
+                                <div
+                                    className="absolute top-5 left-5 w-[65px] border-gray-200 border-3 h-[65px] rounded-full bg-white flex items-center justify-center">
+                                    <Image src={slikamene} alt={"radnik"}
+                                           className="object-fit w-[55px] h-[55px] rounded-full"/>
                                 </div>
+                                <h1 className="absolute top-6 right-22 font-semibold text-black text-xl">{worker.workerName}</h1>
+                                <p className="absolute top-14 left-26 text-muted-foreground text-md">{worker.position}</p>
+                                <div
+                                    className="flex flex-col xl:flex-row 2xl:flex-row absolute left-5 top-25 w-[90%] h-[50px]">
+                                    <div className="h-1/2 flex gap-2 flex-wrap">
+                                        <Badge variant={"secondary"}
+                                               className="pt-[5px] pb-[5px] pl-3 pr-3">Moler</Badge>
+                                        <Badge variant={"secondary"}
+                                               className="pt-[5px] pb-[5px] pl-3 pr-3">Moler</Badge>
+                                        <Badge variant={"secondary"}
+                                               className="pt-[5px] pb-[5px] pl-3 pr-3">Menadžer</Badge>
+                                    </div>
+                                </div>
+                                <p className="absolute bottom-15 left-7 text-black font-semibold">Ukupno
+                                    projekata: <span className="text-muted-foreground">120</span></p>
                             </div>
-                            <p className="absolute bottom-15 left-7 text-black font-semibold">Ukupno projekata: <span className="text-muted-foreground">120</span></p>
-                        </div>
+                        ))}
                     </main>
                 </div>
             </section>
