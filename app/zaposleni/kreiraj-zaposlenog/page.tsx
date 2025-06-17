@@ -26,25 +26,37 @@ const Page = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const options = [
-        { value: "moler", label: "Moler" },
-        { value: "gipsar", label: "Gipsar" },
-        { value: "fasader", label: "Fasader" },
+        { value: "Moler", label: "Moler" },
+        { value: "Gipsar", label: "Gipsar" },
+        { value: "Fasader", label: "Fasader" },
     ];
 
     async function createWorker(e: any) {
         e.preventDefault();
         try {
-            const res = await edgestore.publicFiles.upload({file});
+            const res = await edgestore.publicFiles.upload({ file });
             setProfilePicture(res.url);
-            console.log(profilePicture, workerName, position, phoneNumber, selectedCategories)
 
-            const response = await axios.post("http://localhost:3000/api/create-worker", { workerName: workerName, category: selectedCategories, phoneNumber: phoneNumber, position: position, profilePicture: profilePicture  })
-                .then(res => {
-                    toast.success("Radnik je uspešno kreiran");
-                    setTimeout(() => {
-                        router.push("/zaposleni");
-                    }, 1200);
-                })
+            if (!res.url) {
+                toast.error("Slika nije uspešno uploadovana. Molimo pokušajte ponovo.");
+                return;
+            }
+
+            if (res.url) {
+                const response = await axios.post("http://localhost:3000/api/create-worker", {
+                    workerName: workerName,
+                    category: selectedCategories,
+                    phoneNumber: phoneNumber,
+                    position: position,
+                    profilePicture: res.url,
+                });
+            }
+
+            toast.success("Radnik je uspešno kreiran");
+            setTimeout(() => {
+                router.push("/zaposleni");
+            }, 1200);
+
         } catch (error: any) {
             if (error.response) {
                 toast.error(error.response.data.message);
@@ -97,9 +109,9 @@ const Page = () => {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectItem value="radnik">Radnik</SelectItem>
-                                                    <SelectItem value="menadzer">Menadžer</SelectItem>
-                                                    <SelectItem value="vlasnik">Vlasnik</SelectItem>
+                                                    <SelectItem value="Radnik">Radnik</SelectItem>
+                                                    <SelectItem value="Menadžer">Menadžer</SelectItem>
+                                                    <SelectItem value="Vlasnik">Vlasnik</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
