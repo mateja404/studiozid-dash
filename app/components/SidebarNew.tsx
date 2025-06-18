@@ -15,7 +15,7 @@ const SidebarNew = ({ isOpen }: any) => {
                     <li><Link href={"/"} className="flex gap-x-3 font-bold text-lg hover:text-black transition-all duration-400"><LayoutDashboard/> Početna</Link></li>
                     <li><Link href={"/zaposleni"} className="flex gap-x-3 font-bold text-lg hover:text-black transition-all duration-400"><Users/> Zaposleni</Link></li>
                     <li><Link href={"/"} className="flex gap-x-3 font-bold text-lg hover:text-black transition-all duration-400"><Laptop/> Uređaji</Link></li>
-                    <li><Link href={"/"} className="flex gap-x-3 font-bold text-lg hover:text-black transition-all duration-400"><Wrench/> Projekti</Link></li>
+                    <li><Link href={"/projekti"} className="flex gap-x-3 font-bold text-lg hover:text-black transition-all duration-400"><Wrench/> Projekti</Link></li>
                 </ul>
             </div>
             {/* Mobile Sidebar */}
@@ -25,7 +25,7 @@ const SidebarNew = ({ isOpen }: any) => {
                     <li><Link className='flex gap-x-3 font-bold text-2xl items-center' href={"/"}><LayoutDashboard /> Početna</Link></li>
                     <li><Link className='flex gap-x-3 font-bold text-2xl items-center' href={"/"}><Users /> Zaposleni</Link></li>
                     <li><Link className='flex gap-x-3 font-bold text-2xl items-center' href={"/"}><Laptop /> Uređaji</Link></li>
-                    <li><Link className='flex gap-x-3 font-bold text-2xl items-center' href={"/"}><Wrench /> Projekti</Link></li>
+                    <li><Link className='flex gap-x-3 font-bold text-2xl items-center' href={"/projekti"}><Wrench /> Projekti</Link></li>
                 </ul>
             </div>
         </nav>

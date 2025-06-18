@@ -20,6 +20,8 @@ interface Worker {
 
 const Page = () => {
     const router = useRouter();
+    const [title, setTitle] = useState<string>("");
+    const [desc, setDesc] = useState<string>("");
     const [workername, setWorkername] = useState("");
     const [budget, setBudget] = useState<number | undefined>(0);
     const [address, setAddress] = useState("");
@@ -48,6 +50,8 @@ const Page = () => {
         e.preventDefault();
         try {
             const response = await axios.post("http://localhost:3000/api/create-project", {
+                title: title,
+                desc: desc,
                 worker_name: workername,
                 budget: budget,
                 address: address,
@@ -93,19 +97,28 @@ const Page = () => {
                                 <form onSubmit={submitProject}>
                                     <div className="flex flex-col gap-6">
                                         <div className="grid gap-2">
+                                            <Label htmlFor="naslov">Opis</Label>
+                                            <Input id="naslov" type="text" placeholder="Zgrada u Beogradu na vodi" required className="focus-visible:ring-0" onChange={(e) => setTitle(e.target.value)}/>
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="opis">Opis</Label>
+                                            <Input id="opis" type="text" placeholder="Zgrada u Beogradu na vodi sa pogledom na Dunav" required className="focus-visible:ring-0" onChange={(e) => setDesc(e.target.value)}/>
+                                        </div>
+                                        <div className="grid gap-2">
                                             <Label htmlFor="radnik">Radnik</Label>
                                             <Select onValueChange={setWorkername}>
                                                 <SelectTrigger className="w-full focus-visible:ring-0">
-                                                    <SelectValue placeholder="Izaberite radnika" />
+                                                    <SelectValue placeholder="Izaberite radnika"/>
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         {workers.map((worker, index) => (
-                                                            <SelectItem key={index} value={worker.workerName}>{worker.workerName}</SelectItem>
+                                                            <SelectItem key={index}
+                                                                        value={worker.workerName}>{worker.workerName}</SelectItem>
                                                         ))}
                                                     </SelectGroup>
                                                 </SelectContent>
-                                            </Select>                                        </div>
+                                            </Select></div>
                                         <div className="grid gap-2">
                                             <div className="relative">
                                                 <Input type="number" defaultValue={budget} onChange={(e) => setBudget(Number(e.target.value))} className="pl-6 focus-visible:ring-0"/>
@@ -114,15 +127,18 @@ const Page = () => {
                                         </div>
                                         <div className="grid gap-2">
                                             <Label htmlFor="address">Adresa</Label>
-                                            <Input id="address" type="text" placeholder="Petra Petrovića 10, Valjevo" required className="focus-visible:ring-0" onChange={(e) => setAddress(e.target.value)}/>
+                                            <Input id="address" type="text" placeholder="Petra Petrovića 10, Valjevo"
+                                                   required className="focus-visible:ring-0"
+                                                   onChange={(e) => setAddress(e.target.value)}/>
                                         </div>
                                         <div className="flex flex-col gap-3">
                                             <Label className="px-1">Početak radova</Label>
                                             <Popover open={startDatePopoverOpen} onOpenChange={setStartDatePopoverOpen}>
                                                 <PopoverTrigger asChild>
-                                                    <Button variant="outline" className="w-48 justify-between font-normal w-full">
+                                                    <Button variant="outline"
+                                                            className="w-48 justify-between font-normal w-full">
                                                         {startDate ? startDate.toLocaleDateString() : "Izaberite datum"}
-                                                        <ChevronDownIcon />
+                                                        <ChevronDownIcon/>
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -142,9 +158,10 @@ const Page = () => {
                                             <Label className="px-1">Kraj radova</Label>
                                             <Popover open={endDatePopoverOpen} onOpenChange={setEndDatePopoverOpen}>
                                                 <PopoverTrigger asChild>
-                                                    <Button variant="outline" className="w-48 justify-between font-normal w-full">
+                                                    <Button variant="outline"
+                                                            className="w-48 justify-between font-normal w-full">
                                                         {endDate ? endDate.toLocaleDateString() : "Izaberite datum"}
-                                                        <ChevronDownIcon />
+                                                        <ChevronDownIcon/>
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -162,7 +179,7 @@ const Page = () => {
                                         </div>
                                         <Select onValueChange={setPaymentStatus}>
                                             <SelectTrigger className="w-full focus-visible:ring-0">
-                                                <SelectValue placeholder="Status isplate" />
+                                                <SelectValue placeholder="Status isplate"/>
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
