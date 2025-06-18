@@ -16,7 +16,8 @@ interface worker {
     position: string,
     profilePicture: string,
     categories: string[],
-    id: number
+    id: number,
+    projectsCount: number
 }
 
 const Page = () => {
@@ -105,7 +106,7 @@ const Page = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <p className="absolute bottom-15 left-7 text-black font-semibold">Ukupno projekata: <span className="text-muted-foreground">120</span></p>
+                                <p className="absolute bottom-15 left-7 text-black font-semibold">Ukupno projekata: <span className="text-muted-foreground">{worker.projectsCount}</span></p>
                                 <div className="absolute bottom-2 w-full h-[40px] flex items-center">
                                     <span className="absolute right-7 pt-[7px] pb-[7px] pl-[10px] pr-[10px] transition-all duration-200 hover:bg-red-500/90 hover:cursor-pointer hover:text-white rounded-md">
                                         <Trash2 onClick={() => deleteProccess(worker.id)} />
