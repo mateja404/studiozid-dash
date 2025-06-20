@@ -7,20 +7,39 @@ import { ChevronRight } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
 import { Table, TableHead, TableHeader, TableRow, TableBody, TableCell } from "@/components/ui/table";
+import { useParams } from "next/navigation";
+import axios from "axios";
+
+interface ProjectDetails {
+    address: string
+    budget: number
+    end_date: Date
+    start_date: Date
+    id: number
+    lat: number
+    lng: number
+    payment_status: string
+    worker_name: string
+}
 
 const HomePage = () => {
+  const { id } = useParams();
   const [status, setStatus] = useState<string | undefined>("utoku");
   const [shortUUID, setShortUUID] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [project, setProject] = useState<ProjectDetails[]>([]);
 
-  useEffect(() => {
-    function generateShortUUID() {
-      const uuid = uuidv4();
-      return uuid.replace?.(/-/g, '').substring(0, 10);
-    }
-    setShortUUID(generateShortUUID());
-  }, []);
+    useEffect(() => {
+        async function getProjectDetails() {
+            const response = await axios.get(`/api/get-project-details/${id}`)
+                .then(res => {
+                    console.log(res.data.projectRows);
+                    setProject(res.data.projectRows);
+                })
+        }
+        getProjectDetails();
+    }, []);
 
   function toggleMenu() {
     setIsActive(prevState => !prevState);
@@ -39,9 +58,9 @@ const HomePage = () => {
           <SidebarNew isOpen={isOpen}/>
           <div className={`flex-grow flex flex-col p-4 max-sm:mt-10 md:mt-25 lg:mt-0 xl:mt-0 2xl:mt-0 sm:mt-30 md:p-7 lg:pl-[220px] xl:pl-[320px] 2xl:pl-[320px] max-sm:pt-[120px] ${isOpen ? "hidden" : ""}`}>
               <div className='w-full mb-8'>
-                  <p className='flex items-center text-[#535d6d]'>Projekti<span><ChevronRight className='w-[20px]'/></span><span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>hdjhdhf874857</span></p>
+                  <p className='flex items-center text-[#535d6d]'>Projekti<span><ChevronRight className='w-[20px]'/></span><span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>{id}</span></p>
                   <div className='mt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-                      <h2 className='text-2xl text-[#1b1b1a] font-bold'>Projekat: {shortUUID}</h2>
+                      <h2 className='text-2xl text-[#1b1b1a] font-bold'>Projekat: {id}</h2>
                       <Button className="text-white pt-1 pb-1 pl-5 pr-5 rounded-full bg-black font-semibold cursor-pointer z-0" onClick={() => setStatus("završeno")} disabled={status === "završeno"}> Označi kao završeno</Button>
                   </div>
                 {status === "utoku" ? (
@@ -67,16 +86,18 @@ const HomePage = () => {
                   <TableHead className="text-right">Budžet</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                <TableRow key={1}>
-                  <TableCell className="font-medium">13.1.2025.</TableCell>
-                  <TableCell>13.2.2025.</TableCell>
-                  <TableCell>Avansirano</TableCell>
-                  <TableCell>Milan Kešelj</TableCell>
-                  <TableCell>Veljka Petrovića 13, Pančevo</TableCell>
-                  <TableCell className="text-right">2000&euro;</TableCell>
-                </TableRow>
-              </TableBody>
+                <TableBody>
+                    {project.map((proj, index) => (
+                        <TableRow key={index}>
+                            <TableCell className="font-medium">{new Date(proj.start_date).toLocaleDateString('sr-RS')}</TableCell>
+                            <TableCell>{new Date(proj.end_date).toLocaleDateString('sr-RS')}</TableCell>
+                            <TableCell>{proj.payment_status}</TableCell>
+                            <TableCell>{proj.worker_name}</TableCell>
+                            <TableCell>{proj.address}</TableCell>
+                            <TableCell className="text-right">{proj.budget}&euro;</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
             </Table>
           </div>
           <div className='flex w-full h-screen xl:h-1/2 2xl:h-1/2 mt-25 flex-col lg:flex-row xl:flex-row 2xl:flex-row gap-x-5 gap-y-10'>
