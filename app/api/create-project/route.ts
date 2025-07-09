@@ -39,6 +39,13 @@ export async function POST(req: NextRequest) {
             "INSERT INTO projects (worker_name, budget, address, lng, lat, start_date, end_date, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [worker_name, budget, address, lng, lat, start_date, end_date, payment_status]
         );
+        const [rows] = await conn.query("SELECT LAST_INSERT_ID() as project_id");
+        const project_id = rows[0].project_id;
+        const change_description = "Projekat započet";
+        await conn.query(
+            "INSERT INTO timeline_changes (project_id, change_description) VALUES (?, ?)",
+            [project_id, change_description]
+        );
 
         return NextResponse.json({ message: "Uspešno ste kreirali projekat" }, { status: 200 });
     } catch (error) {

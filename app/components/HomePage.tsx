@@ -29,6 +29,8 @@ const HomePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [project, setProject] = useState<ProjectDetails[]>([]);
+  const [lng, setLng] = useState<number>(0);
+  const [lat, setLat] = useState<number>(0);
 
     useEffect(() => {
         async function getProjectDetails() {
@@ -36,6 +38,8 @@ const HomePage = () => {
                 .then(res => {
                     console.log(res.data.projectRows);
                     setProject(res.data.projectRows);
+                    setLng(res.data.projectRows[0].lng);
+                    setLat(res.data.projectRows[0].lat);
                 })
         }
         getProjectDetails();
@@ -136,7 +140,9 @@ const HomePage = () => {
             </div>
             <div className='flex w-full xl:w-1/2 2xl:w-1/2 h-full rounded-xl bg-white shadow-md items-center justify-center'>
               <div className='w-full h-full items-center justify-center flex'>
-                <Mapica/>
+                {lat !== 0 && lng !== 0 && (
+                  <Mapica lng={lng} lat={lat} />
+                )}
               </div>
             </div>
           </div>
