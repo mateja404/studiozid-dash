@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         const project_id = rows[0].project_id;
         const change_description = "Projekat započet";
         await conn.query(
-            "INSERT INTO timeline_changes (project_id, change_description) VALUES (?, ?)",
+            "INSERT INTO project_changes (project_id, change_description) VALUES (?, ?)",
             [project_id, change_description]
         );
 

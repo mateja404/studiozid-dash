@@ -1,65 +1,27 @@
 "use client";
 
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import axios from "axios";
-import { Calendar } from "@/components/ui/calendar";
-import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import toast, { Toaster } from "react-hot-toast";
 import SidebarNew from "@/app/components/SidebarNew";
 import { useRouter } from "next/navigation";
 import { Textarea } from '@/components/ui/textarea';
-
-interface Worker {
-    workerName: string
-}
+import { useParams } from 'next/navigation';
 
 const Page = () => {
     const router = useRouter();
-    const [title, setTitle] = useState<string>("");
-    const [desc, setDesc] = useState<string>("");
-    const [workername, setWorkername] = useState("");
-    const [budget, setBudget] = useState<number | undefined>(0);
-    const [address, setAddress] = useState("");
-    const [startDate, setStartDate] = useState<Date | undefined>();
-    const [endDate, setEndDate] = useState<Date | undefined>();
-    const [paymentStatus, setPaymentStatus] = useState("");
+    const { id } = useParams();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [startDatePopoverOpen, setStartDatePopoverOpen] = useState(false);
-    const [endDatePopoverOpen, setEndDatePopoverOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [isActive, setIsActive] = useState(false);
-    const [workers, setWorkers] = useState<Worker[]>([]);
-
-    useEffect(() => {
-        async function getAllNames() {
-            try {
-                const response = await axios.get("/api/get-all-workers")
-                setWorkers(response.data.workers)
-                console.log(response.data)
-            } catch (error) {}
-        }
-        getAllNames();
-    }, []);
+    const [change, setChange] = useState<string>("");
 
     async function submitProject(e: any) {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:3000/api/create-project", {
-                title: title,
-                desc: desc,
-                worker_name: workername,
-                budget: budget,
-                address: address,
-                start_date: startDate?.toLocaleDateString('en-CA'),
-                end_date: endDate?.toLocaleDateString('en-CA'),
-                payment_status: paymentStatus
-            });
+            const response = await axios.post(`/api/create-change/${id}`, { change: change });
             toast.success(response.data.message);
             setTimeout(() => {
                 router.push("/projekti")
@@ -97,7 +59,7 @@ const Page = () => {
                             <CardContent>
                                 <form onSubmit={submitProject}>
                                     <div className="flex flex-col gap-6">
-                                        <Textarea placeholder='Unesite detalje o promeni' className='max-h-[300px] h-[100px] focus-visible:ring-0'></Textarea>
+                                        <Textarea placeholder='Unesite detalje o promeni' className='max-h-[300px] h-[100px] focus-visible:ring-0' onChange={(e) => setChange(e.target.value)}></Textarea>
                                         <Button type="submit" className="w-[100%] hover:cursor-pointer">
                                             Dodaj
                                         </Button>

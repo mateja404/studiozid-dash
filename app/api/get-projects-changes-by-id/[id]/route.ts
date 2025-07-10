@@ -7,15 +7,9 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 
     try {
         conn = await pool.getConnection();
-        const [projectRows] = await conn.query("SELECT * FROM projects WHERE id = ?", [id]);
+        const [projectRows] = await conn.query("SELECT * FROM project_changes WHERE project_id = ? ORDER BY change_date DESC", [id]);
 
-        const projectRowsWithNumbers = projectRows.map((project: any) => ({
-            ...project,
-            lat: parseFloat(project.lat),
-            lng: parseFloat(project.lng)
-        }));
-
-        return NextResponse.json({ projectRows: projectRowsWithNumbers }, { status: 200 });
+        return NextResponse.json({ projectChanges: projectRows }, { status: 200 });
     } catch (error) {
         console.log("Error:", error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });

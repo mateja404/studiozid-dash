@@ -7,7 +7,8 @@ CREATE TABLE projects (
   lat DECIMAL(10, 7) NOT NULL,
   start_date DATE NOT NULL,
   end_date DATE NOT NULL,
-  payment_status ENUM('neplacen', 'placen', 'avansirano') DEFAULT 'neplacen'
+  payment_status ENUM('neplacen', 'placen', 'avansirano') DEFAULT 'neplacen',
+  finished ENUM('Završen', 'U toku') DEFAULT 'U toku'
 );
 
 CREATE TABLE workers (
