@@ -16,7 +16,6 @@ export function ProjectsPieChart() {
         async function getChartDetails() {
             try {
                 const res = await axios.get("/api/get-finished-unfinished-projects");
-                console.log(res.data);
                 setTotalProjects(res.data.projectsCount[0].count);
                 setFinishedProjects(res.data.finishedCount[0].finished);
                 setUnFinishedProjects(res.data.unfinishedCount[0].unfinished);

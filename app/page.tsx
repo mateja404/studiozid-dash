@@ -8,11 +8,17 @@ import { Plus,  HardHat,  MoveRight,  UserLock,  ListChecks,  MonitorSmartphone 
 import { IncomeChart } from "@/app/components/IncomeChart";
 import { ProjectsPieChart } from "@/app/components/ProjectsPieChart";
 import Link from "next/link";
+import { HomepageTable } from "@/app/components/HomepageTable";
+import axios from "axios";
 
 export default function Home() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(false);
+    const [projects, setProjects] = useState<number>();
+    const [finishedProjects, setFinishedProjects] = useState<number>();
+    const [workersCount, setWorkersCount] = useState<number>();
+    const [devicesCount, setDevicesCount] = useState<number>();
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
@@ -20,6 +26,18 @@ export default function Home() {
             router.replace("/login");
             toast.error("Nisi ulogovan");
         }
+        async function getProjectsCount() {
+            try {
+                const res = await axios.get("/api/get-finished-unfinished-projects");
+                setProjects(res.data.projectsCount[0].count);
+                setFinishedProjects(res.data.finishedCount[0].finished);
+                setDevicesCount(res.data.devicesCount[0].devices);
+                setWorkersCount(res.data.workersCount[0].workers);
+            } catch(error) {
+                console.log(error);
+            }
+        }
+        getProjectsCount();
     });
 
     function toggleMenu() {
@@ -29,16 +47,11 @@ export default function Home() {
   return (
       <main className="w-screen h-screen flex bg-[#f8f8f8] overflow-x-hidden">
           <Toaster/>
-          <button onClick={toggleMenu}
-                  className="fixed mt-7 right-5 z-33 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden"
-                  aria-label="Toggle menu">
+          <button onClick={toggleMenu} className="fixed mt-7 right-5 z-33 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent transition-all duration-200 border border-black/10 group lg:hidden xl:hidden 2xl:hidden" aria-label="Toggle menu">
               <div className="relative flex flex-col items-center justify-center w-5 h-5 overflow-hidden">
-                  <span
-                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
-                  <span
-                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
-                  <span
-                      className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
+                  <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "rotate-45" : "-translate-y-1.5"}`}></span>
+                  <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-all duration-200 ease-in-out ${isActive ? "opacity-0" : "opacity-100"}`}></span>
+                  <span className={`absolute w-5 h-[2px] bg-black rounded-full transform transition-transform duration-300 ease-in-out ${isActive ? "-rotate-45" : "translate-y-1.5"}`}></span>
               </div>
           </button>
           <SidebarNew isOpen={isOpen}/>
@@ -60,42 +73,34 @@ export default function Home() {
                       <div className="flex md:flex-row flex-col h-auto w-full p-3 items-center justify-center gap-3">
                           <div
                               className="w-full md:w-1/4 lg:w-1/4 h-auto min-h-[120px] max-h-[200px] bg-white p-5 rounded-xl shadow-md flex flex-col gap-y-5">
-                              <h1 className="flex gap-x-3 text-md items-center font-semibold"><HardHat
-                                  className="text-red-400"/> Aktivni projekti</h1>
+                              <h1 className="flex gap-x-3 text-md items-center font-semibold"><HardHat className="text-red-400"/> Aktivni projekti</h1>
                               <div className="flex flex-row justify-between items-center">
-                                  <p className="text-3xl font-bold text-zinc-700">320</p>
-                                  <Link href={"/projekti"} className="group"><MoveRight
-                                      className="group-hover:text-red-500 transition-all duration-300 text-muted-foreground"/></Link>
+                                  <p className="text-3xl font-bold text-zinc-700">{projects}</p>
+                                  <Link href={"/projekti"} className="group"><MoveRight className="group-hover:text-red-500 transition-all duration-300 text-muted-foreground"/></Link>
                               </div>
                           </div>
                           <div
                               className="w-full md:w-1/4 lg:w-1/4 h-auto min-h-[120px] max-h-[120px] bg-white p-5 rounded-xl shadow-md flex flex-col gap-y-5">
-                              <h1 className="flex gap-x-3 text-md items-center font-semibold"><ListChecks
-                                  className="text-green-300"/> Završeni projekti</h1>
+                              <h1 className="flex gap-x-3 text-md items-center font-semibold"><ListChecks className="text-green-300"/> Završeni projekti</h1>
                               <div className="flex flex-row justify-between items-center">
-                                  <p className="text-3xl font-bold text-zinc-700">52</p>
-                                  <Link href={"/projekti"} className="group"><MoveRight
-                                      className="group-hover:text-green-300 transition-all duration-300 text-muted-foreground"/></Link>
+                                  <p className="text-3xl font-bold text-zinc-700">{finishedProjects}</p>
+                                  <Link href={"/projekti"} className="group"><MoveRight className="group-hover:text-green-300 transition-all duration-300 text-muted-foreground"/></Link>
                               </div>
                           </div>
                           <div
                               className="w-full md:w-1/4 lg:w-1/4 h-auto min-h-[120px] max-h-[200px] bg-white p-5 rounded-xl shadow-md flex flex-col gap-y-5">
-                              <h1 className="flex gap-x-3 text-md items-center font-semibold"><UserLock
-                                  className="text-blue-900"/> Radnici</h1>
+                              <h1 className="flex gap-x-3 text-md items-center font-semibold"><UserLock className="text-blue-900"/> Radnici</h1>
                               <div className="flex flex-row justify-between items-center">
-                                  <p className="text-3xl font-bold text-zinc-700">30</p>
-                                  <Link href={"/zaposleni"} className="group"><MoveRight
-                                      className="group-hover:text-blue-900 transition-all duration-300 text-muted-foreground"/></Link>
+                                  <p className="text-3xl font-bold text-zinc-700">{workersCount}</p>
+                                  <Link href={"/zaposleni"} className="group"><MoveRight className="group-hover:text-blue-900 transition-all duration-300 text-muted-foreground"/></Link>
                               </div>
                           </div>
-                          <div
-                              className="w-full md:w-1/4 lg:w-1/4 h-auto min-h-[120px] max-h-[200px] bg-white p-5 rounded-xl shadow-md flex flex-col gap-y-5">
+                          <div className="w-full md:w-1/4 lg:w-1/4 h-auto min-h-[120px] max-h-[200px] bg-white p-5 rounded-xl shadow-md flex flex-col gap-y-5">
                               <h1 className="flex gap-x-3 text-md items-center font-semibold">
                                   <MonitorSmartphone/> Uređaji</h1>
                               <div className="flex flex-row justify-between items-center">
-                                  <p className="text-3xl font-bold text-zinc-700">15</p>
-                                  <Link href={"/uredjaji"} className="group"><MoveRight
-                                      className="group-hover:text-black transition-all duration-300 text-muted-foreground"/></Link>
+                                  <p className="text-3xl font-bold text-zinc-700">{devicesCount}</p>
+                                  <Link href={"/uredjaji"} className="group"><MoveRight className="group-hover:text-black transition-all duration-300 text-muted-foreground"/></Link>
                               </div>
                           </div>
                       </div>
@@ -107,6 +112,11 @@ export default function Home() {
                   </div>
                   <div className="w-full md:w-1/2">
                       <ProjectsPieChart/>
+                  </div>
+              </div>
+              <div className="w-[98%] mx-auto h-auto p-3 flex flex-row gap-3 items-center justify-center rounded-xl shadow-md bg-white">
+                  <div className="w-full">
+                      <HomepageTable/>
                   </div>
               </div>
           </section>

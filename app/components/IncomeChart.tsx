@@ -17,7 +17,6 @@ export function IncomeChart() {
         async function getIncomes() {
             try {
                 const res = await axios.get("/api/get-incomes");
-                console.log(res.data);
                 setIncomes(res.data.incomes)
             } catch (error) {
                 console.log(error);
