@@ -30,3 +30,11 @@ CREATE TABLE project_changes (
   created_by VARCHAR(100) NOT NULL,
   FOREIGN KEY (project_id) REFERENCES projects(id)
 );
+
+CREATE TABLE devices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL,
+    os VARCHAR(100),
+    browser VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

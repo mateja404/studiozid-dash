@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,34 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Bowser from "bowser";
+import browser from "maplibre-gl/src/util/browser";
 
 export function LoginForm({ className,  ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
   const [password, setPassword] = useState<string>("");
+  const [ip, setIp] = useState();
+  const [os, setOs] = useState<any>();
+  const [browserInfo, setBrowserInfo] = useState<any>();
+
+  useEffect(() => {
+    const fetchIP = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        const userAgent = navigator.userAgent;
+        const browser = Bowser.getParser(userAgent);
+        const operativni = browser.getOS();
+        const browserDetail = browser.getBrowser();
+        setOs(operativni);
+        setBrowserInfo(browserDetail);
+        setIp(data.ip);
+      } catch (error) {
+        console.error('Error fetching IP:', error);
+      }
+    };
+    fetchIP()
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,6 +46,11 @@ export function LoginForm({ className,  ...props }: React.ComponentProps<"div">)
       toast.success(response.data.message);
       sessionStorage.setItem("token", response.data.token);
       router.push("/");
+      try {
+        const res = await axios.post("/api/send-device-info", { ip: ip, os: os, browser: browserInfo });
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.log(error);
     }

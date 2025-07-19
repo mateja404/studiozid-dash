@@ -1,52 +1,58 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { useEffect, useState } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Card,  CardContent,  CardDescription,  CardFooter,  CardHeader,  CardTitle, } from "@/components/ui/card";
+import { ChartConfig,  ChartContainer,  ChartTooltip,  ChartTooltipContent, } from "@/components/ui/chart";
+import axios from "axios";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
+interface Incomes {
+    prihod: number
+}
 
-export const description = "An area chart with gradient fill"
+export function IncomeChart() {
+    const [incomes, setIncomes] = useState<Incomes[]>([]);
 
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-]
+    useEffect(() => {
+        async function getIncomes() {
+            try {
+                const res = await axios.get("/api/get-incomes");
+                console.log(res.data);
+                setIncomes(res.data.incomes)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getIncomes();
+    }, []);
 
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "hsl(var(--chart-1))",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig
+    const chartData = incomes.length > 0 ? [
+        { month: "Januar", desktop: incomes[0]?.prihod || 0 },
+        { month: "Februar", desktop: incomes[1]?.prihod || 0 },
+        { month: "Mart", desktop: incomes[2]?.prihod || 0 },
+        { month: "April", desktop: incomes[3]?.prihod || 0 },
+        { month: "Maj", desktop: incomes[4]?.prihod || 0 },
+        { month: "Jun", desktop: incomes[5]?.prihod || 0 },
+        { month: "Jul", desktop: incomes[6]?.prihod || 0 },
+        { month: "Avgust", desktop: incomes[7]?.prihod || 0 },
+        { month: "Septembar", desktop: incomes[8]?.prihod || 0 },
+        { month: "Oktobar", desktop: incomes[9]?.prihod || 0 },
+        { month: "Novembar", desktop: incomes[10]?.prihod || 0 },
+        { month: "Decembar", desktop: incomes[11]?.prihod || 0 },
+    ] : [];
 
-export function Chart() {
+    const chartConfig = {
+        desktop: {
+            label: "Prihod",
+            color: "var(--chart-5)",
+        }
+    } satisfies ChartConfig
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Godišnji prihodi</CardTitle>
                 <CardDescription>
-                    Prikazuje prihode u poslednjih 12 meseci
+                    Prikazuje prihode u 2025. godini
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -81,27 +87,7 @@ export function Chart() {
                                     stopOpacity={0.1}
                                 />
                             </linearGradient>
-                            <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
                         </defs>
-                        <Area
-                            dataKey="mobile"
-                            type="natural"
-                            fill="url(#fillMobile)"
-                            fillOpacity={0.4}
-                            stroke="var(--color-mobile)"
-                            stackId="a"
-                        />
                         <Area
                             dataKey="desktop"
                             type="natural"
@@ -116,11 +102,8 @@ export function Chart() {
             <CardFooter>
                 <div className="flex w-full items-start gap-2 text-sm">
                     <div className="grid gap-2">
-                        <div className="flex items-center gap-2 font-medium leading-none">
-                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                        </div>
                         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                            January - June 2024
+                            Januar - Decembar 2025
                         </div>
                     </div>
                 </div>
