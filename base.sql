@@ -36,5 +36,7 @@ CREATE TABLE devices (
     ip_address VARCHAR(45) NOT NULL,
     os VARCHAR(100),
     browser VARCHAR(100),
+    device_id VARCHAR(255) NOT NULL UNIQUE,
+    banned BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

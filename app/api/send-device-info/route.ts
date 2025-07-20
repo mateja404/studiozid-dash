@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import pool from "@/app/utils/db";
 
 export async function POST(req: NextRequest) {
-    const { ip, os, browser } = await req.json();
+    const { ip, os, browser, deviceId } = await req.json();
     if (!ip || !os || !browser) {
         return NextResponse.json({ message: "Svi parametri su potrebni" }, { status: 200 });
     }
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     let conn;
     try {
         conn = await pool.getConnection();
-        const [deviceRows] = await conn.query("INSERT INTO devices (ip_address, os, browser) VALUES(?, ?, ?)", [ip, `${osName} ${osVersion}`, `${browserName} ${browserVersion}`]);
+        const [deviceRows] = await conn.query("INSERT INTO devices (ip_address, os, browser, device_id) VALUES(?, ?, ?, ?)", [ip, `${osName} ${osVersion}`, `${browserName} ${browserVersion}`, deviceId]);
         return NextResponse.json({ message: "success" }, { status: 200 });
     } catch (error) {
         console.log(error);

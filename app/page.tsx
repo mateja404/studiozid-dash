@@ -15,22 +15,25 @@ export default function Home() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(false);
-    const [projects, setProjects] = useState<number>();
     const [finishedProjects, setFinishedProjects] = useState<number>();
+    const [unFinishedProjects, setUnFinishedProjects] = useState<number>();
     const [workersCount, setWorkersCount] = useState<number>();
     const [devicesCount, setDevicesCount] = useState<number>();
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
         if (!token) {
             router.replace("/login");
             toast.error("Nisi ulogovan");
+        } else {
+            setLoading(false);
         }
         async function getProjectsCount() {
             try {
                 const res = await axios.get("/api/get-finished-unfinished-projects");
-                setProjects(res.data.projectsCount[0].count);
                 setFinishedProjects(res.data.finishedCount[0].finished);
+                setUnFinishedProjects(res.data.unfinishedCount[0].unfinished);
                 setDevicesCount(res.data.devicesCount[0].devices);
                 setWorkersCount(res.data.workersCount[0].workers);
             } catch(error) {
@@ -39,6 +42,10 @@ export default function Home() {
         }
         getProjectsCount();
     });
+
+    if (loading) {
+        return <div className="w-screen h-screen text-center">Učitavanje...</div>;
+    }
 
     function toggleMenu() {
         setIsActive(prevState => !prevState);
@@ -75,7 +82,7 @@ export default function Home() {
                               className="w-full md:w-1/4 lg:w-1/4 h-auto min-h-[120px] max-h-[200px] bg-white p-5 rounded-xl shadow-md flex flex-col gap-y-5">
                               <h1 className="flex gap-x-3 text-md items-center font-semibold"><HardHat className="text-red-400"/> Aktivni projekti</h1>
                               <div className="flex flex-row justify-between items-center">
-                                  <p className="text-3xl font-bold text-zinc-700">{projects}</p>
+                                  <p className="text-3xl font-bold text-zinc-700">{unFinishedProjects}</p>
                                   <Link href={"/projekti"} className="group"><MoveRight className="group-hover:text-red-500 transition-all duration-300 text-muted-foreground"/></Link>
                               </div>
                           </div>

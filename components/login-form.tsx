@@ -10,9 +10,8 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Bowser from "bowser";
-import browser from "maplibre-gl/src/util/browser";
 
-export function LoginForm({ className,  ...props }: React.ComponentProps<"div">) {
+export function LoginForm({ deviceId, className,  ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
   const [password, setPassword] = useState<string>("");
   const [ip, setIp] = useState();
@@ -46,11 +45,8 @@ export function LoginForm({ className,  ...props }: React.ComponentProps<"div">)
       toast.success(response.data.message);
       sessionStorage.setItem("token", response.data.token);
       router.push("/");
-      try {
-        const res = await axios.post("/api/send-device-info", { ip: ip, os: os, browser: browserInfo });
-      } catch (error) {
-        console.log(error);
-      }
+      const res = await axios.post("/api/send-device-info", { ip: ip, os: os, browser: browserInfo, deviceId: deviceId });
+      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
