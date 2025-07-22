@@ -3,40 +3,49 @@
 import React, { useState, useEffect } from 'react';
 import toast, { Toaster } from "react-hot-toast";
 import SidebarNew from "@/app/components/SidebarNew";
-import { ChevronRight, ExternalLink, Trash2, UserRoundPen } from "lucide-react";
+import {ChevronRight, ShieldX, TabletSmartphone, Monitor, Earth, Chrome, ShieldCheck, ShieldUser} from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { AlertDialogHeader, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
+import { AlertDialogHeader, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
+import Image from "next/image";
+import androidsvg from "@/public/android.svg";
+import applesvg from "@/public/apple.svg";
+import { Tooltip,  TooltipContent,  TooltipTrigger} from "@/components/ui/tooltip";
 
-interface project {
+interface Device {
     id: number
-    address: string
-    budget: number
-    worker_name: string
-    start_date: string
-    end_date: string
+    banned: number
+    browser: string
+    device_id: number
+    ip_address: string
+    os: string
+    created_at: string
 }
 
 const Page = () => {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(false);
-    const [projects, setProjects] = useState<project[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-    const [projectsCount, setprojectsCount] = useState<number>(0);
+    const [unbanDialogOpen, setUnbanDialogOpen] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(0);
+    const [devices, setDevices] = useState<Device[]>([]);
+    const [devicesCount, setDevicesCount] = useState<number>(0);
+    const [os, setOs] = useState("windows 6.5");
 
-    async function getAllprojects() {
+    async function getAllDevices() {
         try {
-            const response = await axios.get("/api/get-all-projects");
+            const response = await axios.get("/api/get-all-devices");
             console.log(response.data)
-            setProjects(response.data.projects);
-            setprojectsCount(response.data.projectsCount);
-        } catch (error) {}
+            setDevices(response.data.devices);
+            setDevicesCount(response.data.devicesCount[0].deviceCount);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     useEffect(() => {
-        getAllprojects();
+        getAllDevices();
     }, []);
 
     function toggleMenu() {
@@ -44,19 +53,51 @@ const Page = () => {
         setIsOpen(prevState => !prevState);
     }
 
-    function deleteProccess(id: number) {
+    function openBanDialog(id: number) {
         setIsDialogOpen(true);
         setSelectedId(id);
     }
 
-    async function deleteWorker(id: number) {
+    function openUnBanDialog(id: number) {
+        setUnbanDialogOpen(true);
+        setSelectedId(id);
+    }
+
+    async function banDevice(id: number) {
         try {
-            const response = await axios.delete("/api/delete-worker", { data: { id: id } })
+            const response = await axios.patch(`/api/ban-device/${id}`);
             toast.success(response.data.message);
             setIsDialogOpen(false);
-            getAllprojects();
+            await getAllDevices();
         } catch (error: any) {
             toast.error(error.response?.data.message || "Greška prilikom kreiranja projekta");
+        }
+    }
+
+    async function unBanDevice(id: number) {
+        try {
+            const response = await axios.patch(`/api/unban-device/${id}`);
+            toast.success(response.data.message);
+            setUnbanDialogOpen(false);
+            await getAllDevices();
+        } catch (error: any) {
+            toast.error(error.response?.data.message || "Greška prilikom kreiranja projekta");
+        }
+    }
+
+    function returnIcon(os: string) {
+        if (os.toLowerCase().includes("android") || os.toLowerCase().includes("ios")) {
+            return <TabletSmartphone className="w-[30px] h-[30px]" />
+        } else if (os.toLowerCase().includes("windows") || os.toLowerCase().includes("linux")) {
+            return <Monitor className="w-[30px] h-[30px]"/>
+        }
+    }
+
+    function returnImage(os: string) {
+        if (os.toLowerCase().includes("android")) {
+            return <Image src={androidsvg} alt="android" className="w-[20px] h-[20px]"/>
+        } else if (os.toLowerCase().includes("ios")) {
+            return <Image src={applesvg} alt="apple"/>
         }
     }
     return (
@@ -78,29 +119,40 @@ const Page = () => {
                         <p className='flex items-center text-[#535d6d]'><span onClick={() => router.push("/")} className="hover:cursor-pointer">Početna</span><span><ChevronRight className='w-[20px] translate-y-[2px]'/></span><span className='bg-[#f3f4f6] pt-[1px] pb-[1px] pl-3 pr-3 rounded-xl text-[#586373]'>Uređaji</span></p>
                         <div className='mt-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
                             <div className="flex-col">
-                                <h2 className='text-2xl text-[#1b1b1a] font-bold'>Uređaji ({projectsCount})</h2>
+                                <h2 className='text-2xl text-[#1b1b1a] font-bold'>Uređaji ({devicesCount})</h2>
                                 <p className='text-md text-muted-foreground font-semibold'>Ovde će biti prikazani svi uređaji sa kojih ste se ulogovali</p>
                             </div>
                         </div>
                     </div>
                     <main className="mt-20 justify-items-center grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] place-items-center gap-y-7 -gap-x-20">
-                        {projects.map((project, index) => (
-                            <div key={index} className="relative max-sm:w-full sm:w-full md:w-[320px] lg:w-[1000px] xl:w-[350px] 2xl:w-[350px] h-[250px] rounded-xl shadow-md">
-                                <h1 className="mt-5 mx-5 w-full truncate font-semibold text-black text-xl max-w-[calc(100%-40px)]">Adresa: {project.address}</h1>
-                                <p className="absolute top-14 mx-5 text-muted-foreground text-md">Budžet: <span className='text-black'>{project.budget}€</span></p>
-                                <p className="absolute top-20 mx-5 text-muted-foreground text-md">Radnik: <span className='text-black'>{project.worker_name}</span></p>
-                                <p className="absolute top-26 mx-5 text-muted-foreground text-md">Početak radova: <span className='text-black'>{new Date(project.start_date).toLocaleDateString("sr-RS", { day: "2-digit", month: "2-digit", year: "numeric" })}</span></p>
-                                <p className="absolute top-32 mx-5 text-muted-foreground text-md">Kraj radova: <span className='text-black'>{new Date(project.end_date).toLocaleDateString("sr-RS", { day: "2-digit", month: "2-digit", year: "numeric" })}</span></p>
-                                <div className="absolute bottom-2 w-full h-[40px] flex items-center">
-                                    <span className="absolute right-33 pt-[7px] pb-[7px] pl-[10px] pr-[10px] transition-all duration-200 hover:bg-red-500/90 hover:cursor-pointer hover:text-white rounded-md">
-                                        <ExternalLink onClick={() => router.push(`projekti/projekat/${project.id}`)} />
-                                    </span>
-                                    <span className="absolute right-20 pt-[7px] pb-[7px] pl-[10px] pr-[10px] transition-all duration-200 hover:bg-red-500/90 hover:cursor-pointer hover:text-white rounded-md">
-                                        <UserRoundPen onClick={() => router.push(`projekti/edit/${project.id}`)} />
-                                    </span>
-                                    <span className="absolute right-7 pt-[7px] pb-[7px] pl-[10px] pr-[10px] transition-all duration-200 hover:bg-red-500/90 hover:cursor-pointer hover:text-white rounded-md">
-                                        <Trash2 onClick={() => deleteProccess(project.id)} />
-                                    </span>
+                        {devices.map((device, index) => (
+                            <div key={index} className="relative flex-1 max-sm:w-full sm:w-full md:w-[320px] lg:w-[1000px] xl:w-[350px] 2xl:w-[350px] h-auto pb-10 min-h-[270px] rounded-xl shadow-md flex flex-col gap-y-3">
+                                <div className="w-[70px] h-[70px] mx-auto rounded-full bg-[#f8f8f8] flex items-center justify-center">
+                                    {returnIcon(device.os)}
+                                </div>
+                                <h1 className="flex items-center gap-x-2 mx-auto">{returnImage(device.os)} {device.os}</h1>
+                                <h1 className="flex items-center gap-x-2 mx-auto"><Earth /> {device.ip_address}</h1>
+                                <h1 className="flex items-center gap-x-2 mx-auto"><Chrome /> {device.browser}</h1>
+                                <h1 className="flex items-center gap-x-2 mx-auto"><ShieldUser /> {device.banned == 1 ? "Banovan" : "Nije banovan"}</h1>
+                                <div className="absolute right-2 bottom-2 pt-7 pb-5 h-[40px] flex items-center flex-row gap-x-0">
+                                    {
+                                        device.banned == 0 ? <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span className="pt-[7px] pb-[7px] pl-[10px] pr-[10px] transition-all duration-200 hover:bg-red-500/90 hover:cursor-pointer hover:text-white rounded-md"><ShieldX onClick={() => openBanDialog(device.id)} /></span>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Banuj uređaj</p>
+                                            </TooltipContent>
+                                        </Tooltip> :
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span className="pt-[7px] pb-[7px] pl-[10px] pr-[10px] transition-all duration-200 hover:bg-red-500/90 hover:cursor-pointer hover:text-white rounded-md"><ShieldCheck onClick={() => openUnBanDialog(device.id)}/></span>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Unbanuj uređaj</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    }
                                 </div>
                             </div>
                         ))}
@@ -111,13 +163,21 @@ const Page = () => {
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Da li ste apsolutno sigurni?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Jednom kada obrišete projekat ne postoji šansa da se povrati. Ovo će trajno obrisati projekat iz naše baze podataka.
-                        </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel className="hover:cursor-pointer focus-visible:ring-0" onClick={() => setIsDialogOpen(false)}>Obustavi</AlertDialogCancel>
-                        <AlertDialogAction className="hover:cursor-pointer focus-visible:ring-0" onClick={() => deleteWorker(selectedId)}>Obriši</AlertDialogAction>
+                        <AlertDialogAction className="hover:cursor-pointer focus-visible:ring-0" onClick={() => banDevice(selectedId)}>Banuj</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+            <AlertDialog open={unbanDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Da li ste apsolutno sigurni?</AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="hover:cursor-pointer focus-visible:ring-0" onClick={() => setUnbanDialogOpen(false)}>Obustavi</AlertDialogCancel>
+                        <AlertDialogAction className="hover:cursor-pointer focus-visible:ring-0" onClick={() => unBanDevice(selectedId)}>Unbanuj</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

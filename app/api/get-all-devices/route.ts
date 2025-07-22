@@ -5,7 +5,9 @@ export async function GET() {
     let conn;
     try {
         conn = await pool.getConnection();
-        return NextResponse.json({ message: "eee" }, { status: 200 });
+        const [devices] = await conn.query("SELECT * FROM devices");
+        const [devicesCount] = await conn.query("SELECT COUNT(*) AS deviceCount FROM devices");
+        return NextResponse.json({ devices: devices, devicesCount: devicesCount }, { status: 200 });
     } catch (err) {
         console.log(err);
     }

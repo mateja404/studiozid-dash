@@ -11,7 +11,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Bowser from "bowser";
 
-export function LoginForm({ deviceId, className,  ...props }: React.ComponentProps<"div">) {
+interface LoginFormProps {
+  deviceId: string
+  className: React.ComponentProps<"div">
+}
+
+export function LoginForm({ deviceId, className,  ...props }: LoginFormProps) {
   const router = useRouter();
   const [password, setPassword] = useState<string>("");
   const [ip, setIp] = useState();
