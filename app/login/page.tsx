@@ -5,7 +5,8 @@ import { isDeviceBanned } from "@/app/utils/isBanned";
 import { redirect } from "next/navigation";
 
 const Page = async () => {
-    const deviceId = cookies().get('device_id')?.value;
+    const cookieStore = await cookies();
+    const deviceId = cookieStore.get('device_id')?.value;
 
     if (deviceId) {
         const banned = await isDeviceBanned(deviceId);

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "Lozinka je obavezna" }, { status: 404 });
     }
 
-    const originalPassword = "$2a$12$db5lupSZqMhLxgMER8TL9OsrpUgpbTFH.3I173sXMnVKDLrGfnAdm";
+    const originalPassword = "$2a$12$5tj24e91uQxd.uA2uY7nReq3O.N0s925loSpQznMKU7zQcaS78Vwm";
     const matchingPasswords = await bcrypt.compare(password, originalPassword);
     if (!matchingPasswords) {
         return NextResponse.json({ message: "Pogrešna lozinka" }, { status: 401 });

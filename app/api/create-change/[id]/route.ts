@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/app/utils/db";
 
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
+export async function POST(req: NextRequest, context: { params: any }) {
     const { id }: any = context.params;
     const { change }: any = await req.json();
     let conn;

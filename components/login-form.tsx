@@ -12,11 +12,10 @@ import { useRouter } from "next/navigation";
 import Bowser from "bowser";
 
 interface LoginFormProps {
-  deviceId: string
-  className: React.ComponentProps<"div">
+  deviceId: string | undefined
 }
 
-export function LoginForm({ deviceId, className,  ...props }: LoginFormProps) {
+export function LoginForm({ deviceId,  ...props }: LoginFormProps) {
   const router = useRouter();
   const [password, setPassword] = useState<string>("");
   const [ip, setIp] = useState();
@@ -57,7 +56,7 @@ export function LoginForm({ deviceId, className,  ...props }: LoginFormProps) {
     }
   }
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6")} {...props}>
       <Toaster/>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="flex flex-col gap-6">
